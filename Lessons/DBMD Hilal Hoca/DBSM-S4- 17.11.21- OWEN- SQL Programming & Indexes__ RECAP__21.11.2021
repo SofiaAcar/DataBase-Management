@@ -1,0 +1,576 @@
+--////////////////////////////////////////////////////////////////
+--UPDATE
+
+    SELECT * FROM Person.Person_2
+    
+    UPDATE Person.Person_2 SET Person_LastName = 'DEFAULT'
+    
+    UPDATE Person.Person_2 
+    SET Person_LastName = 'ATICI' 
+    WHERE SSN = 889623212886
+    
+    
+    
+    UPDATE Person.Person 
+    SET Person_LastName = B.Person_LastName
+    FROM Person.Person A, Person.Person_2 B
+    WHERE A.SSN = B.SSN
+    AND A.SSN = 889623212886
+    
+    
+    UPDATE Person.Person 
+    SET Person_LastName = (
+                            SELECT Person_LastName 
+                            FROM Person.Person_2
+                            WHERE  SSN = 889623212886)
+    WHERE SSN = 889623212886
+    
+    
+    SELECT * FROM Person.Person
+    
+--///////////////////////////////////////////////////////////
+
+
+--DELETE
+(TRUNCATE den farkı DELETE belli kayıtları silmek için kullanılıyor. TRUNCATE comple tabloya format atıyor.)
+
+INSERT Book.Publisher VALUES ('İş Bankası Kültür Yayıncılık'), ('Can Yayıncılık'), ('İletişim Yayıncılık')
+
+SELECT * FROM Book.Publisher
+
+
+DELETE FROM Book.Publisher                 --Bu kod WHERE şartı vermediğimiz için TÜM DEĞERLERİ SİLER.
+
+
+DELETE FROM Book.Publisher  
+WHERE  Publisher_Name  IS NULL
+
+DELETE FROM Book.Publisher 
+
+
+INSERT Book.Publisher VALUES ('İLETİŞİM')    --Hepsini silmemize rağmen geçmiş kayıtların, yeni eklenen değer 6.indexten başlıyor.
+
+
+//////////////////////////////////////////////////////////
+
+
+DROP TABLE Person.Person_2   --Artık ihtiyacımız yok.
+
+TRUNCATE TABLE Person.Person_Mail;
+TRUNCATE TABLE Person.Person;
+TRUNCATE TABLE Book.Publisher;
+
+
+SELECT *  FROM Person.Person_Mail
+
+
+--///////////////////////////////////////////////////////
+
+**Author Table:
+    ALTER  TABLE Book.Author ADD CONSTRAINT pk_author PRIMARY KEY (Author_ID) --Hata verdi==> NULL olabilen bir sütunu PRIMARY KEY yapamaz.
+                                                                              --Bu yüzden önce sütun yapısını değiştireceğiz.
+    
+    
+    ALTER TABLE Book.Author ALTER COLUMN Author_ID INT NOT NULL
+    
+    
+    ALTER  TABLE Book.Author ADD CONSTRAINT pk_author PRIMARY KEY (Author_ID) --Tekrar çalıştırdığımızda sorun çıkmayacaktır.
+    
+    
+**Book Table:
+    
+    ALTER TABLE Book.Book ADD CONSTRAINT FK_Author FOREIGN KEY (AUTHOR_ID)
+    REFERENCES Book.Author (Author_ID)
+    
+    
+    ALTER TABLE Book.Book ADD CONSTRAINT FK_Publisher FOREIGN KEY (Publisher_ID)
+    REFERENCES Book.Publisher(Publisher_ID)
+    
+    
+**Person.Person_Mail
+    
+    ALTER TABLE Person.Person_Mail ADD CONSTRAINT FK_Person4 FOREIGN KEY(SSN)
+    REFERENCES Person.Person(SSN)
+    
+**Person.Person_Phone
+
+    ALTER TABLE Person.Person_Phone ADD CONSTRAINT FK_Person2 FOREIGN KEY (SSN)
+    REFERENCES Person.Person (SSN)
+    
+    
+**Person.Loan
+    
+    ALTER TABLE Person.Loan ADD CONSTRAINT FK_PERSON FOREIGN KEY (SSN)
+    REFERENCES Person.Person (SSN)
+    
+    ON UPDATE NO ACTION                         # Bu kısmı yazmasak bile Default olarak FOREIGN KEY constraints olarak NO ACTION yapacaktır.
+    ON DELETE NO ACTION
+    
+    
+    
+    ALTER TABLE Person.Loan ADD CONSTRAINT FK_book FOREIGN KEY (Book_ID)
+    REFERENCES Book.Book (Book_ID)
+    
+    ON UPDATE NO ACTION
+    ON DELETE CASCADE
+    
+    
+    
+    ****İlişkisel database structure hazır hale gelmiş oldu.
+    
+--////////////////////////////////////////////////////////////////////////
+
+DATABASE MODELLING AND DESIGN/ SESSION 4
+
+**SQL PROGRAMMING
+
+==> Table of Contents
+    *Stored Procedures
+    *User Valued Functions
+    *Database Indexes
+    
+    
+    
+--Store Procedures
+    
+    SQL Stored Procedures: 
+            * What are Stored Procedures
+            * Benefits of Stored Procedures
+            * Syntax of Stored Procedures
+            * Steps to Stored Procedures
+            
+*** What are Stored Procedures?
+    --SQL Server stored procedure is a batch of statements grouped as a logical unit and stored in the database.
+    --The stored procedure accepts the parameters and executes the T-SQL statements in the procedure, returns the result set if any.
+    
+    
+*** Benefits of Stored Procedures
+    --Performance
+    --Productivty and Easy to Use
+    --Maintainability
+    --Security
+    
+    
+    
+    AD-HOC Query                         STORED PROCEDURE
+    
+        QUERY
+        PARSE
+        OPTIMIZE
+        COMPILE
+        EXECUTE                               EXECUTE
+        RESULT                                RESULT
+        
+        
+        
+ --Syntax of Stored Procedures
+     
+      Syntax:                                                         To Execute;
+      CREATE PROCEDURE procedure_name                                 EXEC procedure_name;    --Exec yazmadan direk procedure ismini yazarak
+      AS                                                                                      --da Procedure çağırılabiliyor.
+      sql_statement
+      GO;
+    
+    
+    
+    
+    STEPS to STORED PROCEDURES
+    
+    --QUERY TIME
+    
+    CREATE PROCEDURE sp_sample1
+    AS
+    BEGIN
+    
+            SELECT 'HELLO WORLD' col1
+        
+    END
+    
+   ------------------- 
+    
+    sp_sample1  # şeklinde çağırınca artık kaydedilmiş bir procedure olarak geliyor.
+    
+    
+    EXEC sp_sample1
+     
+         veya
+         
+    EXECUTE sp_sample1
+    
+    şeklinde çağırıp kullanabiliriz.
+    
+    
+    
+---Procedure'de değişiklik yapmak;
+    
+    
+    ALTER PROCEDURE sp_sample1
+    AS
+    BEGIN
+    
+            SELECT 'HELLO THERE' col1
+        
+    END
+    
+    
+-----------------------------------------
+
+CREATE TABLE ORDER_TBL
+(
+ORDER_ID TINYINT NOT NULL,
+CUSTOMER_ID TINYINT NOT NULL,
+CUSTOMER_NAME VARCHAR(50),
+ORDER_DATE DATE,
+EST_DELIVER_DATE   --estimated delivery date
+);
+
+----------------------------------------
+
+INSERT ORDER_TBL VALUES (1,1, 'ADAM', GETDATE()-10, GETDATE()-5),
+                        (2,2, 'Smith', GETDATE()-8, GETDATE()-4),
+                        (3,3, 'John', GETDATE()-5, GETDATE()-2),
+                        (4,4, 'Jack',GETDATE()-3,  GETDATE()+1),
+                        (5,5, 'Owen', GETDATE()-2, GETDATE()+3),
+                        (6,6, 'Mike', GETDATE(), GETDATE()+5),
+                        (7,7, 'Rafeal', GETDATE(), GETDATE()+5),
+                        (8,8, 'Johnson', GETDATE(), GETDATE()+5)
+--------------------------------------------
+
+
+SELECT * FROM ORDER_TBL
+
+------------------------------------------
+
+
+CREATE TABLE ORDER_DELIVERY
+(
+ORDER_ID TINYINT NOT NULL,
+DELIVERY_DATE DATE               --tamamlanan delivery date
+);
+
+-----------------------------------------
+
+SET NOCOUNT ON
+INSERT ORDER_DELIVERY VALUES (1, GETDATE()-6),
+                             (2, GETDATE()-2),
+                             (3, GETDATE()-2),
+                             (4, GETDATE() ),
+                             (5, GETDATE() +2),
+                             (6, GETDATE() +3),
+                             (7, GETDATE() +5),
+                             (8, GETDATE() +5)
+                             
+---Set count on komutu ile message bölümünde "7 rows affected" gibi ifadeler yerine "Commands completed successfully" şeklinde bir ifade çıkıyor. Bunun memory üzerinde yük anlamında daha az yüke işaret olduğunu söyledi hoca.
+
+
+----------------------------------
+
+SELECT * FROM ORDER_DELIVERY
+
+---------------------------------
+
+
+SELECT * 
+FROM ORDER_TBL
+    
+------------------------------------
+
+SELECT          COUNT(ORDER_ID) AS TOTAL_ORDER
+FROM            ORDER_TBL
+
+----------------------------------
+
+
+CREATE PROC sp_cnt_order AS 
+BEGIN
+        SELECT          COUNT(ORDER_ID) AS TOTAL_ORDER
+        FROM            ORDER_TBL
+END
+
+
+
+
+----------
+
+sp_cnt_order                  # Python'da fonksiyon tanımlamak gibi.
+
+
+---------------------------------
+
+
+CREATE PROC sp_cnt_order1 (@DATE DATe)                                --# @ procedur parametresi uyguluyoruz. 
+AS 
+BEGIN
+        SELECT          COUNT(ORDER_ID) AS TOTAL_ORDER
+        FROM            ORDER_TBL
+        WHERE           ORDER_DATE = @DATE
+END
+
+
+-------------------------
+
+sp_cnt_order1 '2021-11-17'                     --# Procedure çağırıldı ve yanına parametresini girdik.
+
+
+------------------------
+
+
+--@ olayı parametre. Paremetrelerde kullanılıyor.
+
+
+-----------------------
+
+DECLARE  @P1 INT, @P2 INT, @SUM INT
+
+------------------
+
+SET @P1 =3
+
+SELECT @P2 = 7                           --# Select ile de SET gibi değer ataması yapabiliriz aynı zamanda veri çağırabiliriz.
+
+
+SET @SUM = @P1 + @P2
+
+--Fonksiyonu nasıl çağıracağız?
+
+SELECT @SUM
+
+
+--Yukarıdaki kod block halinde çalıştırmamız lazım. Diğer türlü hata veriyor.
+
+-----------------------------
+
+SELECT @P1= 3, @P2 = 7, @SUM= @P1+ @P2
+-------
+DECLARE @P3 INT = 5, @P4 INT = 7, 
+
+PRINT @P3 +  @P4
+
+----------------------------
+
+--/////////////////////////////////////////////
+
+DECLARE @CUSTOMER VARCHAR(100)
+SET @CUSTOMER = 'Smith'
+
+SELECT  *
+FROM ORDER_TBL
+WHERE CUSTOMER_NAME = @CUSTOMER
+
+--Bunu bir stored procedure olarak veya fonksiyon olarakta kaydedebiliriz.
+
+-----------------------------------
+
+--///////////////////////////////////////////
+--IF - ELSE
+
+
+DECLARE @CUST INT
+
+SET @CUST =3
+
+IF @CUST = 3
+
+    BEGIN
+    
+        SELECT * 
+        FROM ORDER_TBL
+        WHERE CUSTOMER_ID = 3             --# Burada 3 satırda bir query yazdığımız için BEGIN ve END arasında yazmamız gerekiyor.
+                                          --# Tek satırda yazıyorsak query BEGIN ve END yazmaya gerek yok.
+    END
+ELSE
+    PRINT('The number is not equal to 3')
+
+
+------------------------
+
+
+DECLARE @CUST INT
+
+SET @CUST =3
+
+IF @CUST = 4
+
+    BEGIN
+    
+        SELECT * 
+        FROM ORDER_TBL
+        WHERE CUSTOMER_ID = 3             --# Burada 3 satırda bir query yazdığımız için BEGIN ve END arasında yazmamız gerekiyor.
+                                          --# Tek satırda yazıyorsak query BEGIN ve END yazmaya gerek yok.
+    END
+
+
+ELSE IF @CUST = 4
+            BEGIN    
+                SELECT * 
+                FROM ORDER_TBL 
+                WHERE CUSTOMER_ID = @CUST
+            END    
+     ELSE   
+        PRINT('The number is not equal to 3  or 4')
+
+
+----------
+
+
+DECLARE @CUST INT
+
+SET @CUST =3
+
+IF @CUST = 5
+
+    BEGIN
+    
+        SELECT * 
+        FROM ORDER_TBL
+        WHERE CUSTOMER_ID = 3             --# Burada 3 satırda bir query yazdığımız için BEGIN ve END arasında yazmamız gerekiyor.
+                                          --# Tek satırda yazıyorsak query BEGIN ve END yazmaya gerek yok.
+    END
+
+
+ELSE IF @CUST = 4
+            BEGIN    
+                SELECT * 
+                FROM ORDER_TBL 
+                WHERE CUSTOMER_ID = @CUST
+            END    
+     ELSE   
+        PRINT('The number is not equal to 3  or 4')
+
+
+****CASE WHEN Sorgu -içinde kullanılıyor.
+****IF-ELSE Sorgu-dışında kullanılıyor.
+
+
+--//////////////////////////////////////////////
+
+
+--WHILE
+
+
+DECLARE @NUM INT = 1
+
+WHILE @NUM < 50
+    BEGIN
+        SELECT @NUM
+    
+        SET @NUM +=1
+
+    END
+    
+    
+-----------------
+
+--/////////////////////////////////////////
+
+--USER VALUED FUNCTIONS
+
+--                Table-Valued Functions                             Scalar-Valued Functions
+
+                --Syntax                                                  --Syntax
+                CREATE FUNCTION function_name                            CREATE FUNCTION function_name
+                (@parameter type)                                        (@parameter type)
+                RETURNS TABLE                                            RETURNS TABLE
+                AS                                                       AS
+                Return sql_statement;                                    BEGIN
+                                                                                 sql_statement
+                                                                         RETURN  value
+                                                                         END;
+--SCALAR VALUED FUNCTIONS
+
+CREATE FUNCTION
+fn_uppertext1
+(
+@inputtext VARCHAR(MAX)
+)
+RETURNS VARCHAR(MAX)
+AS
+BEGIN
+
+    RETURN UPPER(@inputtext)
+
+END
+
+                                                                         
+--Fonkstion tanımlandı. Peki bu fonksiyonu nasıl çağıracağım? Fonksiyonlarda Şema adını yazmamızı istiyor.
+
+SELECT dbo.fn_uppertext1('welcome')
+
+SELECT dbo.fn_uppertext1(CUSTOMER_NAME) FROM ORDER_TBL
+
+---------------------
+
+SELECT * FROM ORDER_TBL
+
+-------------------
+CREATE FUNCTION fn_date_info (@DATE DATE)
+RETURN TABLE
+AS
+
+     RETURN SELECT * FORM ORDER_TBL WHERE ORDER_DATE = @DATE;
+     
+
+SELECT * FROM fn_date_info('2021-11-17')
+
+
+-----------------------------------------------
+
+
+**View gibi düşünebiliriz, bir fonksiyon olarak kaydediyor.
+
+--CREATE yaptığımız herbir obje database'de kayıt ediliyor.
+
+
+--////////////////////////////////////////////////////////////////
+
+--DATABASE INDEXES
+
+
+    --Database Scanning Methods
+        The right scan method to use is very much dependent on the use case and the state of the database at the time of scanning.
+            
+            SCAN        QUERY PLANNER     SEEK
+            
+--Genel anlamda sorgularımızın daha hızlı çalışmasını sağlıyor indexler.
+--INDEX yoksa SCAN metodunu, INDEX olan sütunu queryde kullandıysak SEEK metodunu kullanıyoruz.
+
+
+    --Query Planning
+        The query planner optimizes a number of different variables within the request the aim of reducing the overall execution time.
+        Optimized parameters that correspond with the cost of sequential page fetches, CPU operations, and cache size.
+        
+        **Understand! How to interpret the plan reported by the  query planner.
+        
+        
+    --FULL TABLE SCAN
+                
+                        NOT THE FASTEST                            BUT ALWAYS CORRECT RESULT
+               **The table is quite small.
+               **The field used in searching contains a large number of duplicates.
+               **The planner determines that the sequential scan would be equally efficient or more efficient for the given criteria than any other scan.
+               
+               
+            
+     --INDEX SEEK
+             
+             QUERY PLANNER ----- INDEX ------- Just like the text book index
+             
+         Index scans are one method of improving the performance of our database queries.
+         
+                             INDEX  SEEK
+                  CLUSTERED              NON-CLUSTERED
+                  
+                  
+                  
+                  
+                  **CLUSTERED INDEX: --Sorting based on key values
+                                     --Each table has only one clustered index.
+                                     --Clustered index use a special structured so-called B-tree (or binary tree) which enables searches,                          inserts, updates,and deletes in logarithmic amortized time.
+                                     --SQL Server automatically creates a corresponding clustered index based on columns included in the 
+                                     primary key.
+                                     
+                                     CREATE CLUSTERED INDEX index_name
+                                     ON schema_name.table_name (column_list);
+                                     
+                  **NON-CLUSTERED INDEX
+                  (Kaldığımız yer)

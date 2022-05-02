@@ -1,0 +1,503 @@
+--Database Modelling and Design (Session 3)
+
+--Table of Contents:
+    * Data Definition Language (DDL)
+    * Data Manipulation Language(DML)
+    * Data Types
+    * Constraints
+    
+    
+--Data Definition Language (DDL)
+    --DDL
+        *CREATE
+        *ALTER
+        *DROP
+        *TRUNCATE
+        *SELECT INTO
+        
+        
+        CREATE Syntaxes:
+        
+        CREATE DATABASE db_name;
+        
+        CREATE TABLE table_name
+        (
+        column_name_1     data_type      optional column_constraints,
+        column_name_2     data_type      optional column_constraints,
+        optional table_constraints
+        );
+        
+        
+        
+        ALTER Syntaxes
+        
+        ADD COLUMN: 
+            ALTER TABLE     table_name
+            ADD             column_name_1  data_type  column_constraints,
+                            column_name_2  data_type  column_constraints;
+                            
+                            
+        ALTER COLUMN:
+            ALTER TABLE     table_name                                  --sütünün yapısını değiştirmek için ALTER, içeriğini değiştirmek 
+            ALTER COLUMN    column_name   new_data_type(size);          --için UPDATE kullanacağız.
+            
+        
+        
+        DROP COLUMN:
+            ALTER TABLE     table_name
+            DROP COLUMN     column_name;
+            
+            
+            DROP Syntax:
+            DROP TABLE [IF EXISTS] table_name;
+            --If exists ile tablo olmasa dahi hata vermeden ilerler. 
+            
+       TRUNCATE Syntax:                                      --Tablonun içerisini boşaltıyor. Tablonun yapısı duruyor ancak format atılmış
+           TRUNCATE TABLE table_name;                        --gibi içerisini boşaltıyor.
+           
+           
+           TRUNCATE vs. DROP vs. DELETE
+           
+           
+           
+           SELECT INTO
+           **Copy a table values
+           
+           Syntax:
+               SELECT [columns] INTO new_table_name
+               FROM  source_table
+               [WHERE condition]
+           
+            
+            
+--Data Manipulation Language (DML)                                      -Microsoft SQL==>T-SQL
+                                                                        -ORACLE==> PL-SQL
+       -DML
+           *SELECT
+           *INSERT
+           *UPDATE
+           *DELETE
+           
+           
+           SELECT Syntaxes
+           --We alread saw it.
+           
+           INSERT Syntax
+           
+               INSERT ONLY ONE ROW:
+                       INSERT INTO table_name (column_list)
+                       VALUES (column_1_value, column_2_value,...);
+                   
+               
+               INSERT MULTIPLE ROWS:
+                       INSERT INTO table_name (column_list)
+                       VALUES
+                           (column_1_value, column_2_value,...),              --Farklı tablo için ayrı bir INSERT INTO oluşturmak gerekiyor.
+                           (column_1_value, column_2_value, ...);
+      
+      *Tablodaki column sayısı kadar veri girmezsek ne olur?
+          --Eğer değer atamadığımız sütünda NOT NULL constraints yok ise, NULL ise yani değeri bu sütuna NULL değerleri  atar.
+          --Fakat NOT NULL constraints var ise hata verir. Sen bunu yazdın ancak bu sütun  NULL olamaz bir değer girmen gerekir demek istiyor. Veyahut herhangi bir default değer var ise problem yaşanmaz.
+      
+                           
+               INSERT INTO SELECT:
+                      INSERT INTO target_table_name(column list)
+                      SELECT (column list)
+                      FROM source_table
+                      ...;
+                      
+                
+                
+              UPDATE Syntax:
+                  
+                  UPDATE table_name
+                  SET   old_version = new_version
+                  [WHERE condition];
+                  
+                  
+                  
+             DELETE Syntax:
+                 
+                 DELETE ALL ROWS:                                   --WHERE ile bir condition belirlemeyince TRUNCATE'in yaptığı işlemi 
+                     DELETE FROM table_name;                        --yapıyor.
+                   
+                 
+                 DELETE WITH CONDITION:
+                     DELETE FROM table_name
+                     WHERE conditions;
+                     
+                     
+                 DELETE TOP.... ROWS:
+                    DELETE TOP 20 FROM table_name
+                    WHERE conditions;
+                         
+                      
+--What are the differences between Truncate, Drop and Delete?
+    --Truncate tablo içindeki veriyi siler./ tablonun içerisini boşaltıyor. Format atıyor. Index değerleri içini boşalttığınız tabloya  değer atadığınızda direk 0 dan başlar. Format atıldığını bu şekilde de anlayabiliriz.
+    --Drop, tablonun veya sütunun tamamını siler.
+    --Delete ise verilen koşulda sütun içindeki satırları siler. Delete'de ise silinmesine rağmen tekrar değer verdiğinizde eski kaldığı index değerinin üzerinden devam eden bir indexleme yaptığını görüyoruz.
+    
+    
+    TRUNCATE                                      vs.             DROP                              vs.               DELETE
+  * The table  continues to exits                              * Removes the table with                            * It is used to delete
+    in the database, completely unloaded and                   its contents from the database.                    certain records in
+    formated.                                                                                                     table. 
+                                                                                                                   * Even if the entire
+                                                                                                                   contents of the table
+                                                                                                                   can be deleted with
+                                                                                                                   delete, it cannot be
+                                                                                                                   formatted.
+--Data Types
+    *String
+    *Date and Time
+    *Numeric
+    
+    
+String Data Types
+
+Data Type    Lower Limit      Upper Limit                       Memory
+char       -  0 chars         8000 charts                       n bytes
+varchar    -  0 chars         8000 charts                       n bytes + 2 bytes
+text       -  0 chars         2.147.483.647 charts              n bytes + 4 bytes
+nchar      -  0 chars         4000 charts                       2 times n bytes
+nvarchar   -  0 chars         4000 charts                       2 time n bytes + 2 bytes
+ntext      -  0 chars         1.073.741.823 charts              2 times the string lenght
+
+
+
+Date and Time Data Types
+
+    Data Types                             Format
+      time                                 hh:mm:ss[nnnnnnn]
+      date                                 YYYY-MM-DD
+      smalldatetime                        YYYY-MM-DD hh:mm:ss
+      datetime                             YYYY-MM-DD hh:mm:ss[.nnn]
+      datetime2                            YYYY-MM-DD hh:mm:ss[.nnnnnnn]
+      datetimeoffset                       YYYY-MM-DD hh:mm:ss[.nnnnnnn] [+|-]hh:mm
+      
+      
+Numeric Data Types
+    Integer Types(Exact Value)
+        INTEGER or INT
+        SMALLINT
+        TINYINT
+        MEDIUMINT
+        BIGINT
+        
+    Floating-Point Types(Approximate Value)
+        FLOAT
+        DOUBLE
+        
+    Fixed-Point Types (Exact Value)
+        DECIMAL
+        NUMERIC
+        
+Numeric Data Types
+
+        Data Type                          Lower Limit                   Upper Limit                     Memory
+        
+        Tinyint                                0                             255                         1 bytes
+        Smallint                               -32.000                       32.000                      2 bytes
+        Int                                    -2.000.000.000                2.000.000.000               4 bytes
+        Bigint                                 -9.223.372.036.....           9.223.372.036.....          8 bytes
+        Decimal                                -10^38+1                      10^38+1                     5 to 17 bytes
+        (precision,scale)
+        Numeric                                -10^38+1                      10^38+1                     5 to 17 bytes
+        (precision,scale)
+        
+        
+        Money                                  -9.223.372.036.....           9.223.372.036.....          8 bytes
+        Smallmoney                             -214.478.3648                 214.478.3648                4 bytes
+        Float                                   1 digit                      38 digits                   4 bytes
+        
+        
+
+
+--Table Constraints
+    
+    *NULL
+    *NOT NULL
+    *UNIQUE
+    *DEFAULT
+    *IDENTITY
+    *PRIMARY KEY
+    *FOREIGN KEY
+    *CHECK
+    
+    
+    Example:
+    
+        USE SW;
+        CREATE TABLE EMPLOYEES
+        (EmployeeNo           CHAR(10) NOT NULL UNIQUE,
+        DepartmentName        CHAR(30) NOT NULL DEFAULT "Human Resources",
+        FirstName             CHAR(25) NOT NULL,
+        LastName              CHAR(25) NOT NULL,
+        Category              CHAR(20) NOT NULL,
+        HourlyRate            CURRENCY NOT NULL,
+        TimeCard              LOGICAL NOT NULL,
+        HourlySalaried        CHAR(1) NOT NULL,
+        EmpType               CHAR(1) NOT NULL,
+        Terminated            LOGICAL NOT NULL,
+        ExemptCode            CHAR(2) NOT NULL,
+        SupervisorName        CHAR(50) NOT NULL,
+        BirthDate             DATE NOT NULL,
+        CollegeDegree         CHAR(5) NOT NULL,
+        CONSTRAINT Employee_PK PRIMARY KEY (EmployeeNo)
+        );
+        
+        
+ **NULL - NOT NULL
+     
+     The column constraint NULL indicates that null values are allowed, which means that a row can be created without a value for this column.
+     
+     The column constraint NOT NULL indicates that a value must be supplied when a new row is created.
+     
+     
+ **UNIQUE
+     
+     The UNIQUE constraint prevents duplicate values from being entered into a column.
+     
+     Both PK and UNIQUE constraints are used to enforce entity integrity.
+     Multiple UNIQUE constraints can be defined for a table.
+     A UNIQUE constraint can be placed on columns that accept nulls. Only one row can be NULL.
+     A UNIQUE constraint automatically creates a unique index on the selected column.
+     
+     
+     Example: 1 to 1 relationship
+             Person - Email
+             Email ==> hem unique bir değer olmalı yani her bir kişin tek bir maili olaibilir veya bir kişinin hiç bir mail adresi olmayabilir yani Null değer olaibilir. 
+             Ancak bir sütuna Hem UNIQUE hemde NULL constraint'ini aynı anda veremeyiz. Çünkü UNIQUE null değerlerin hepsini de UNIQUE hale getireceğinden tek bir satırda NULL değeri çıkacak. Bu yüzden mail ile ilgili  ayrı bir tablo oluşturmamız gerekiyor bu durumuda. 
+        
+        
+        
+  **IDENTITY
+      
+      IDENTITY [(seed, increment)]         CREATE TABLE tbl_hotel(hotel_id INT IDENTITY (1,1), ...);
+      
+      --We can use the optional column constraint IDENTITY to provide a unique, incremental value for that column.
+      --Often used with the IDENTITY constraints to serve as the unique row identifier for the table.
+      
+          *Generates sequential numbers.
+          *Does not enforce entity integrity.
+          *Only one column can have the IDENDITY property.
+          *Must be defined as an integer, numeric or decimal data type.
+          *Cannot update a column with the IDENTITY property.
+          *Cannot obtain NULL values.
+          *Cannot bind defaults and default constraints to the column.
+          
+     
+    PRIMARY KEY
+        
+        A primary key is a column or group of columns that uniquely identifies each row in a table. You create a primary key for a table by using the PRIMARY KEY constraint.
+        
+        *In case the primary key has two or more columns, you must use the PRIMARY KEY constraint as a table constraint.
+        *Each table can contain only one primary key.
+        *SQL Server automatically sets the NOT NULL constraint for all the primary key columns.
+        *SQL Server also automatically creates a unique clustered index(or a non-clustered index if specified as such) when you create a primary key. 
+        
+        
+    FOREIGN KEY
+        
+        The FOREIGN KEY (FK) constraint defines a column, or combination of columns, whoese values match the PRIMARY KEY(PK) of another table.
+        
+        *Values in an FK are automatically updated when the PK values in the associated table are updated/unchanged.
+        *FK constraints must reference PK or the UNIQUE constraint of another table.
+        
+        
+        CONSTRAINT constraint_name FOREIGN KEY (column_names)
+        REFERENCES Parent_table name (column_name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        GO
+        
+        
+        
+        **Foreign Key Rules:
+            --NO ACTION (kaynak tabloda yapılan değişikliği 2.sine uygulama demek)
+            --SET NULL (Kaynak tabloda değişen değer yerine NULL atamamıza izin verir.)
+            --CASCADE  (kaynak tabloda yapılan değişikliği 2.sine UYGULA demek)
+            --SET DEFAULT (DEFAULT  olarak belirlediğiniz değerin ,  değiştirdiğiniz değişkenin değerine atanmasını sağlar).
+            
+            UPDATE veya DELETE gibi işlemler için bu kuralları işletebiliriz.
+            
+            
+        
+      CHECK:
+          
+          The CHECK constraint restricts values that can be entered into a table.
+          
+          *It can contain search conditions similar to a WHERE clause.
+          *It can reference columns in the same table.
+          *The data validation rule for a CHECK constraint must evaluate to a boolean expression.
+          
+          
+          CHECK Constraints Example:
+              GO
+              CREATE TABLE SALESREPS
+              (
+              Emp1_num Int NOT NULL,
+              CHECK (Emp1_num BETWEEN 101 and 199),
+              Name  CHAR(15),
+              Age Int CHECK(Age >=21),
+              Quota Money  CHECK (Quota >= 0.0),
+              HireDate DateTime,
+              CONSTRAINT QuotaCap CHECK((HireDate < "01-01-2004") OR ((Quota <= 300000))
+              );
+              
+              
+              CHECK içerisinde fonksiyonları kullanabiliyoruz.
+              
+            
+        
+                          
+
+--Person- Book arasında many to many ilişkisi ver. 
+    Bir kişi birden fazla kitap alabilir, bir kitap birden fazla kişiye loan(verilebilir).
+    Ve bu Person-Book arasındaki many to many ilişkisi bir relation tablosunda tutuluyor.
+    Loan içinde ki SSN ve Book-id composite foreign keyler, çünkü tek başlarına bu ilişkiyi tanımlayamıyorlar. Her bir social security number ve kitap idsi çoklayabilir çünkü. Tek başlarına Loan tablosunu açıklayamıyorlar. Her ikisini birden bu yüzden COMPOSITE FK olarak belirlemiş olduk. 
+    
+    
+--Book tablosunda: 
+    Her bir kitabın yazar ve yayıncısı hakkında ayrı bir tablo oluşturmadık. Çünkü 1 to many ilişki olduğu için yani bir kitabın tek bir yazarı ve yayıncısı olduğu için BOOK tablosu içinde ifade edebiliyoruz. Yazara ve yayıncıya göre BOOK-id çoklama yapmaz.  Bu yüzden aynı yerde bunları tutmakta bir sakınca yok.
+    
+    
+    CREATE DATABASE LibraryDatabase;
+    
+    USE LibraryDatabase
+    
+    
+    CREATE SCHEMA Book;
+    
+    CREATE SCHEMA Person;
+    
+--Önce ENTITY tablolarını oluşturmamız gerekiyor. Daha sonrasında Relationship tablolarını oluşturacağız.
+
+    
+--Create Book.Author Table
+    
+     CREATE TABLE [Book].[Author](
+         [Author_ID][int],
+         [Author_FirstName][nvarchar](50) NOT NULL,
+         [Author_LastName][nvarchar](50) NOT NULL,
+         );
+     
+     
+--Create Publisher Table     
+     
+  CREATE TABLE [Book].[Publisher](
+    [Publisher_ID][int] PRIMARY KEY IDENTITY (1,1) NOT NULL,                   --IDENTITY yani Publisher_id 1 den başlayarak artarak devam
+    [Publisher_Name] [nvarchar](100) NULL                                      --edecek yani.
+    );
+    
+    
+    
+--Create Book.Book Table
+    CREATE TABLE [Book].[Book] (
+        [Book_Id] [int] PRIMARY KEY NOT NULL,
+        [Book_Name][nvarchar](50) NOT NULL,
+        Author_ID INT NOT NULL,
+        Publisher_ID INT NOT NULL
+        );
+    
+    
+    **Author_ID neden UNIQUE constraint koymadık? ==>  Bir yazarın birden fazla kitabı olabilir çünkü.
+    
+    
+--Create Person.Person Table
+    CREATE TABLE [Person].[Person] (
+        [SSN] [bigint] PRIMARY KEY NOT NULL,
+        [Person_FirstName] [nvarchar](50) NULL,
+        [Person_LastName] [nvarchar](50) NULL
+        );
+    
+    
+    
+--Create Person.Person_Mail Table:
+
+    CREATE TABLE [Person].[Person_Mail](
+        [Mail_ID] INT PRIMARY KEY IDENTITY (1,1),
+        [Mail] NVARCHAR(MAX) NOT NULL,
+        [SSN] BIGINT UNIQUE NOT NULL
+        );
+    
+    
+    
+--Create Person.Person_Phone table
+    
+    CREATE TABLE [Person].[Person_Phone] (
+        [Phone_Number] [bigint] INT PRIMARY KEY NOT NULL,
+        [SSN] [bigint] NOT NULL
+        );
+        
+        
+--Create Person.Loan Table
+    
+    CREATE TABLE [Person].[Loan] (
+        [SSN] BIGINT NOT NULL,
+        [Book_ID] INT NOT NULL,
+        PRIMARY KEY ([SSN],  [Book_Id])              --İkisi birlikte bir Composite PK olmuş oldu.
+        );
+        
+        
+
+
+
+**INSERT
+
+    INSERT INTO Person.Person (SSN, Person_FirstName, Person_LastName) VALUES(75056659595, 'Zehra', 'Tekin')
+    
+    INSERT Person.Person (SSN, Person_FirstName, Person_LastName) VALUES(75056659595, 'Zehra', 'Tekin')
+                (INTO olmadanda olabilir)
+                
+    
+    SELECT * FROM Person.Person
+    
+    
+    INSERT INTO Person.Person (SSN, Person_FirstName) VALUES (889623212466, 'Kerem') # sadece yazdığımız sütunlara değer atayabiliriz.
+    
+    INSERT INTO Person.Person (SSN, Person_FirstName) VALUES (889623212466, 'Kerem', 'ATLI') # şeklinde yazsaydık hata verirdi.
+    
+    INSERT INTO Person.Person VALUES (889623212466, 'Kerem', 'ATLI')    # Bu şekilde sütun ismi belirtmezsek hata almıyoruz. Sütun sayısı
+                                                                        # ile girdiğimiz değer sayısı eşit olmalı yalnızca.
+                                                                        
+    INSERT INTO Person.Person VALUES (89213243545,  'Kerem', NULL)
+    
+    INSERT INTO Person.Person VALUES (88232556264, 'Metin', 'Sakin')
+    
+    INSERT INTO Person.Person VALUES (35532888963, 'Ali', 'Tekin')
+    
+    
+    Aynı anda birden fazla VALUE insert etmek;
+        INSERT INTO Person.Person_Mail (Mail, SSN)       --Burda  Mail_ID yok, çünkü IDENTITY constraint ile otomatik olarak doldurulacak.
+        VALUES ('zehtek@gmail.com', 75056659595), 
+               ('meyet@gamil.com', 15078893526),
+               ('metsak@gmail.com', 35532558963)
+    
+    
+    SELECT * FROM Person.Person_Mail
+    
+    
+    
+--SELECT INTO
+
+    SELECT    *
+    INTO      Person.Person_2
+    FROM      Person.Person
+    WHERE     Person_LastName = 'Tekin'
+    
+    
+    
+--INSERT INTO SELECT
+
+INSERT Person.Person_2 (SSN, Person_FirstName, Person_LastName)
+
+
+SELECT    *
+FROM      Person.Person
+WHERE     Person_FirstName LIKE 'A%'
+    
+    
+    
+INSERT Book.Publisher
+DEFAULT VALUES

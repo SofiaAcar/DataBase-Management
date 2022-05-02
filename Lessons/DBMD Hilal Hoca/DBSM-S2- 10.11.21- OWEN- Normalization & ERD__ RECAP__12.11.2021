@@ -1,0 +1,256 @@
+--Cardinality and Connectivity
+        
+        **Many to many (M:N) Relationship
+            One entity from entity set A can be associated with more than one entity from entity set B and vice versa. It cannot be implemented as such in the relational model.It can be implemented by breaking  up to produce a set of 1:M relationships. 
+        
+        Entity A ____M_____Relationship ______M_______Entity B
+        
+        Example:Student _____M______Assigned _______N________Entity B
+        
+        Entity A ____1_____Relationship____M______Entity AB______N______Relationship_______1_____Entity B
+        
+       **Unary Relationship (recursive)
+           A  unary relationship, also called recursive, is one in which a relationship exists between occurences of the same entity set.
+           In this relationship, the primary and foreign keys are the same, but they represent two entities with different roles.
+                         ------------Relationship ---------
+                         |                                 |
+                         |                                 |
+                         |                                 |
+                         |                                 |
+                         |----------Entity A---------------
+           Example: Manages  ----- Employees
+           
+           
+       **Ternary Relationships
+           A ternary relationship is a relationship type that involves many to many relationships between three tables.
+           
+           Entity A -----------------Relationship --------------- Entity C
+                                           |
+                                           |
+                                           |
+                                       Entity C
+
+           
+   Example:        Employee -----------------Relationship --------------- Department
+                                           |
+                                           |
+                                           |
+                                       Location
+
+--Entity Relationship Diagram
+    *What is an ER diagram?
+        An Entity Relationship Diagram (ER) is a visual representation of different entities within a system and how they related to each other. For example, the elements writer novel, and a consumer may be described using ER diagrams the following way:
+        
+        Writer___________________Creater________________Novel
+                                                          |
+                                                          |
+                                                          |
+       Consumer_________________________________________ Buys
+
+
+    *ERD Notations:
+        The two of notations most widely used for creating Entity Relationship Diagrams are:
+            --Chen's notation
+            --Crow's foot notation
+            
+            Crow's Foot Notation Example:
+                _____________  = Relationship
+                
+                __________|____= One
+                
+                             /
+                ____________/ ___  = Many
+                            \
+                             \
+                             
+                __________||____=  One and ONLY One
+                
+                __________O|____= Zero or One
+                
+                
+                             /
+                __________|_/ ___  = One or Many
+                            \
+                             \
+                             
+                             /                
+                __________O_/ ___  = Zero or Many
+                            \
+                             \             
+    
+--Entity: 
+    An entity is an object in the real world with an independent existence that can be differentiated from other objects.
+    An entity might be:
+        physical existence (e.g., a lecturer, a student, a car)
+        conceptual existence(e.g., a course, a job, a position)
+        
+--Entity's Strength
+    Entities can be classified based on their strength.
+        Strong Entity Type: if it can exist apart from all of its related entities.
+        Weak Entity Type: if its tables are existence-dependent.That is, it cannot exist withuot a relationship with another entity.
+        
+        Student __________________________SS Number
+        Strong                              Weak
+        (independent)                       (dependent)
+        Entity Type                         Entity Type
+--Atributes:
+    Each entity is described by a set of attirbutes. Each attribute has a name and is associated with an entity and a domain of legal values.However, the information about attribute domain is not presented on the ERD.
+    
+    Name1_______________Entity_____________Name3
+                           |
+                           |
+                           |
+                           Name2
+                          
+--How to Draw ER Diagrams:
+    Identify all the entities in the system. An entity should appear only once in a particular diagram. Create rectangeles for all entities and name them properly.
+    Identify relationships between entities. Connect them using a line and add a diamond in the middle describing the relationship.
+    Add attributes for entities. Give meaningful attribute names so they can be understood easily.
+    
+--ER Diagram Best Practices:
+    * Provide a precise and appropriate name for each entity, attribute, and relationship in the diagram. In naming entities, remember to use singular nouns.
+    * Remove vague, redundant or unnecessary relationshis between entities.
+    * Never connect a relationship to another relationship.
+    * Make effective use of colors. You can use colors to classify similar entities or to highlight key areas in your diagrams.
+    
+--Integrity Rules and Constraints
+
+    * Domain Integrity: Domain restricts the values of attributes in the relation and is a constraint of the relational model.
+        We need more specific ways to state what data values are or are not allowed and which format is suitable for an attribute.
+
+    * Entity Integrity: To ensure entity integrity, it is required that every table have a primary key. Neither the PK nor any part of it can contain null values.
+    
+    * Null Constraints
+        A null is special symbol, independent of data type, which means either unknown or inapplicable. 
+        It does not mean zero or blank.
+        
+        Can represent:
+            --An unknown attribute value
+            --A known, but missing, attribute value
+            --A "not applicable" condition.
+
+
+    * Referential Integrity:
+        Referential integrity requires that a foreign key must have a matching primary key or it must be null.
+        This constraint is specified between two tables(parent and  child); it maintains the correspondence between rows in these tables. 
+        It means the reference from a row in one table to another table must be valid. 
+        
+     * Foreign Key Rules:
+         Additional foreign key rules may be added when setting referential integrity, such as what to do with the child rows when the record with the PK, part of the parent, is deleted or changed(updated).
+         
+             NO ACTION
+             SET NULL
+             CASCADE
+             SET DEFAULT
+             
+     * Enterprise Constraints:
+         Enterprise constraints- sometimes referred to as semantic constraints- are additional rules specified by users or database administrators and can be based on multiple tables.
+        
+    * Business Rules:
+        Business rules are obtained from users when gathering requirements.
+        Some examples of business rules are:
+            --A teacher can teach many students.
+            --A class can have a maximum of 35 students.
+            --A course can be taught many times, but by only one instructor.
+            --Not all teachers teach classes.
+            
+
+/////////////////////////////////////////////////////////////////////////////
+
+* Normalization
+
+--What is Normalization?
+    
+   Normalization is a database design tecnique that reduces data redundancy and eliminates undesirable characteristics like Insertion, Update,and Deletion Anomalies.
+   Normalization rules divides larger tables into smaller tables and links them using relationships.
+   
+*ERD & Normalization
+      Normalization procedure focuses on characteristics of specific entities and represents the micro view of entities within the ERD.
+      
+* Normalization and Database Design
+      Make sure that proposed entities meet required normal form before table structures are created.
+      
+      
+      --Insertion Anomaly: An insertion anomaly occurs when you are inserting inconsistent information into a table.
+      --Update Anomaly: Changing existing information incorrectly is called an update anomaly.
+      --Deletion Anomaly: A deletion anomaly occurs when you delete a record that may contain attributes that shouldn't be deleted.
+      
+--How to Avoid Anomalies?
+    * The best approach to creating tables without anomalies is to ensure that the tables are normalized, and that's accomplished by understanding functional dependencies.
+    * FD ensures that all attributes in a table belong to that table. In other words, it will eliminate redundancies and anomalies.
+    
+
+
+
+ALTER TABLE [product].[stock] WITH CHECK ADD FOREIGN KEY([product_id])
+REFERENCES [product].[product]([product_id])
+ON UPDATE CASCADE                                 --Update işlemlerinde source tabloya git ve yapılan işlemi uygula demek CASCADE
+ON DELETE CASCADE                                 --DELETE işlemlerinde source tabloya git ve yapılan işlemi uygula demek CASCADE
+GO
+
+
+ALTER TABLE [product].[stock] WITH CHECK ADD FOREIGN KEY ([store_id])
+REFERENCES [sale].[store]([store_id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+
+CREATE TABLE  [product].[stock] (
+        [store_id] [int] NOT NULL,
+        [product_id] [int] NOT NULL,
+        [quantity] [int] NULL,
+  PRIMARY KEY CLUSTERED
+  (
+      [store_id] ASC,
+      [product_id] ASC
+
+
+
+--Normal Forms
+    All the tables in any database can be in one of the normal forms. Ideally we only want minimal redundacy for PK to FK. 
+    There are six normal forms, but we will only look at the first four, which are;
+        * First normal form(1NF)
+        * Second normal form (2NF)
+        * Third normal form (3NF)
+        * Boyce - Codd Normal Form 
+        ....
+        
+        ***BCNF is rarely used.
+        
+        
+     **First Normal Form (1NF)
+         -There must be a primary key in each entity table.
+         -A table must not contain more than one domain. (atomic)
+         -Each column should hold only one information.
+         -There should be no repeating colmuns.
+         
+     ** Second Normal Form (2NF)
+         -For the second normal form, the relation must first be in 1NF.
+         -If, and only if, the PK comprises a single attribute the relation is automatically in 2NF.
+         -If the relaiton has a composite PK, then each non-key attribute must be fully dependent on the entire PK and not on a subset of the PK (i.e, there must be no partial dependency or augmentation).
+         
+
+
+
+            **Functional Dependency
+
+    ** Third Normal Form (3NF)
+        -To be in third normal form, the relation must be in second normal form
+        -Also all transitive dependencies must be removed;a non-key attribute may not be functionally depedendent on another non-key attribute.
+        
+    ** Boyce-Codd Normal Form (BCNF)
+        When a table has more than one candidate key, anomalies may result even though the relation is in 3NF. Boyce-Codd normal form is special case of 3NF. A relation is in BCNF if, and only if, every determinant is a candidate key.
+        
+
+
+
+
+
+
+
+
+
+
+
+

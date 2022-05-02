@@ -1,0 +1,279 @@
+--Excpected Achievements
+    *Familiar with Database Literature
+    *Familiar with RDBMS Concepts
+    *How to do Data Modelling
+    *How to design a Database
+    *Ready for interviews
+
+DBDM TOPICS
+
+    * Introduction to Database
+    * Data Modelling
+    * Normalization
+    * DDL- DML
+    * SQL Programming
+    * Database Index
+    * DB Connection with Python
+
+
+--Introduction to Database
+        * What is Data?
+        * DBMS Fundamental Concepts
+        * Database Users
+        * Relational Data Model Concepts
+        * Entity Relationship Diagram
+        * Cardinality and Connectivity
+        * Integrity Rules and Constraints
+        
+
+    *Database Management System Fundamental Concepts
+        --Database Approach: Refers to the technology of storing and retrieving users data with utmost efficieny along with appropriate security measures.
+        User Interaction __________ DBMS___________ Database
+        
+What is a Database?
+    * A database is a shared collection of related data used to support the activities of a particular organization.
+    * A database can be viewed as a repository of data that is defined once and then accessed.
+    
+    Data(Structured)
+    What is Metadata?
+        * A set of data that describes and gives information about data.
+        
+        Database:-Universities and Colleges
+                - Online Shopping
+                - Human Resource Management
+                - Manufacturing
+                - Social Media Sites
+
+--Database Properties:
+A database has the following properties:
+    row
+    column
+    table (as a whole)
+    
+--What is a DBMS?
+A database management system (DBMS) is a collection of programs that enables users to create and maintain databases and control all access to them.
+    -MySQL
+    -Access
+    -SQLite
+    -ORACLE
+    -Microsoft SQL Server
+    -PostgreSQL
+
+--Characteristics of DBMS:
+    * Self-describing nature of a database system
+    * Support for multiple views of data
+    * Sharing of data and multiuser system
+    * Control of data redundancy
+    * Enforcement of integrity constraints
+    * Restriction of unauthorized access
+    * Transaction processing
+    * Backup and recovery facilities
+    
+    
+--MS SQL Server
+    *Sybase
+    *Microsoft 1989
+    *C& C++
+    *Microsoft Azure Cloud Support
+    *Structured Languages (SQL) and Semi Structured data format (Json) Support
+    *Integration with Hadoop and other NoSQL Sources
+
+--Components of DBMS:
+    Hardware
+    Software
+    Data
+    Procedures
+    Database Access Language
+    
+    
+--Components of DBMS: Language
+It is a quert language which is used to write commands to perform CRUD operations like create, read, update,and delete.
+    CRUD ==> CREATE / READ / UPDATE / DELETE
+
+
+*Ad Hoc- anlık query(ihtiyaca binaen oluşturulan queryler)
+*Procedural Queries
+
+
+--Query Process
+
+Query _______Parser and Translator__________Relational - Algebra Expression ---Optimizer-- Execution Plan_______Evalution Engine____OUTPUT
+                                                                                    |                                  |
+                                                                                    |                                  |
+                                                                                    STATS                             DATA
+                                                                                    
+
+--OLAP vs. OLTP
+    
+                                    OLAP                     vs.           OLTP
+                                Analytical                                Transactional
+                Informations    Slow Queieries                            Fast Processing      Operations
+                                Denormalized                              Normalized
+                                Historical Data                           Current Data
+            
+                                ____________                             _______________
+                               
+                                Business Data                            Business Process
+                                Warehouse
+                                
+
+
+--OLAP CUBE
+    Business intelligence işlerinde kullanılıyor.
+    
+--STAR SCHEMA(Datawarehouse)
+
+
+--ETL & SSIS
+
+ETL = Extract - Transform - Load
+|
+|
+|
+SSIS = SQL Server Integration Service
+
+
+
+--Types of Data Models
+    *Flat Model
+    *Network Model
+    *Oject Oriented
+    *Hierarchical Model
+    *Relational Model
+    *NoSQL
+    
+    Big Data
+    *Volume
+    *Variety
+    *Velocity
+    
+--Vertical- Horizontal Scaling
+
+
+--Entity- Relationship Model
+    An entity- relationship model (or ER model) describes interrelated things of interest in a specific domain of knowledge.
+    A basic ER model is composed of entity types (which classify the things of interest) and specifies relationships that can exist between entities (instances of those entity types).
+    
+    
+--Database Users
+
+    *End Users
+            End users are the people whose jobs require access to a database for querying, updating and generating reports.
+            
+    *Application Users
+            Application users are the people who access an existing application program to perform daily tasks.
+    
+    *Sophisticated Users
+            Sophisticated users are those who have their own way of accessing the database.
+            
+    *Application Programmers
+            These users implement specific application programs to access the stored data. They must be familiar with the DBMS to accomplish their task.
+    
+    *Database Administrators (DBA)
+            This may be one person or a group of people in an organization responsible for authorizing access to the database, monitoring its use and managing all of the resources to support the use of the entire database system.
+            
+            DBA Responsibilities:
+                --Installing and upgrading the DBMS Servers.
+                --Design and implementation.
+                --Performance tuning.
+                --Migrate database servers.
+                --Backup and Recovery
+                --Security
+                --Documentation
+                
+                
+--Relational Data Model Concepts
+
+    * Relational Model in Database Design
+    -Entity Relationship (ER) Diagrams are widely used to design relational databases.
+    -The entities in the ER schema become tables, attributes and converted the database schema. Since they can be used to visualize database tables and their relationships it's commonly used for database troubleshooting as well. 
+    
+   -What is Relational Data Model?
+       The relational data model describes the world as "a collection of interrelated relations(or tables)."
+
+
+--Relation
+    A relation, also known as a table or file, is a subset of the Cartesian product of a list of domains characterized by a name.
+    
+--Table
+    A database is composed of multiple tables and each table holds the data.
+    
+    *Column:The principal storage units are called columns.
+    *Record:Records contain fields that are related, such as a customer or an employee. A tuple is another term used for record.
+    *Domain: 
+        A domain is the original sets of atomic values used to model data. By atomic value, we mean that each value in the domain is indivisible as far as relational model is concerned.
+        For example: The domain of Marital Status has a set of possibilities: Married, Single, Divorced
+        The domain of First Name is the set of character strings that represents names of people.
+        
+--Table Properties-1
+    A table has a name that is distinct from all other tables in the database.
+    There are no duplicate rows;each row is distinct.
+    Entries in columns are atomic. The table does not contain repeating groups or multivalued attributes.
+    Entries from columns are from the same domain based on their data type including:
+                    *Number(numeric, integer, float, smallint...)
+                    *Character(string)
+                    *Date
+                    *Logical(true or false)
+    Operations combining different data types are disallowed.
+    Each attribute has a distinct name.
+    The sequence of columns is insignificant.
+    The sequence of rows is insignificant.
+    
+
+
+--KEYS
+    Keys are very important part of Relational data model. They are used to establish and identify relationships between tables and also to uniquely identify any record or row of data inside a table.
+    A key can be a single attribute or a group of attributes, where the combination may act as a key.
+    There are several types of keys, such as Candidate key, Composite key, Primary key (PK), Secondary key, Alternate key and Foreign Key (FK).
+    
+    
+  *Types of Keys:
+      ---> Candidate Key: A candidate key is a simple or composite key that is unique and minimal. It is unique because no 2 rows in a table may have the same value at any time. It is minimal because every column is necessary in order to attain uniqueness.
+      ---> Composite Key: A composite key is composed of 2 or more attributes.
+      ---> Primary Key: The primary key(PK) is a candidate key that is selected by the database designer to be used as an idenfying mechanism for the whole entity set. It must uniquely identify tuples in a table and not be null. The primary key is indicated in the ER model by underlining the attribute.
+      ---> Secondary key: A secondary key is an attribute used strictly for retrieval purposes(can be composite)
+      ---> Alternate key: Alternate keys are all candidate keys not chosenas the primary key.
+      ---> Foreign key: A foreign key (FK) is an attribute in a table that references the primary key in another table. FK can be null. Both foreign and primary keys must be of the same data type.
+      
+      
+      
+
+
+*Primary key normalde integer değer olur.
+*Primary key'in unique bir değer olması gerekiyor.
+
+
+--Cardinality and Connectivity 
+    *Relationships
+    Bir güç bakımdan bir de tür bakımdan ilişki denilince kavramlar aklımıza gelmeli.
+    
+    
+--Types of Relationships
+    It is important to understand that there are different kinds of relationship that can exist between two tables.
+    These differences are not technical; they are instead a function of the logical, semantic connection between the two tables.
+    There are various types of relationships, such as one to one (1:1), one to many(1:M), many to many(M:N), unary(recursive) and ternary relationships.
+    
+
+    **One to one (1:1) Relationship
+        A one to one (1:1) relationship is the relationship of one entity set A to only one entity set B, and vice versa. It should be rare in any relational database design. In fact, it could indicate that two entities actually belong in the same table.
+        
+            Entity A ______1______Relationship _____1_____Entity B
+            
+            Example: Person ___1___has____1___TC
+                        
+    **One to many(1:M) Relationship
+        One entity from entity set A can be associated with more than one entities of entity set B however an entity from entity set B, can be associated with at most one entity.
+        
+            Entity A _____1______Relationship_____M______Entity B
+            
+            Example: Customer_______1_____ Placed______M_____Order
+
+    **Many to many(M:N) Relationship
+    
+
+
+
+        
+        
+
+        
